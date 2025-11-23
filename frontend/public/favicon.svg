@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Interview Preparation AI favicon">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ff8a00"/>
+      <stop offset="1" stop-color="#ff5e00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background circle -->
+  <circle cx="32" cy="32" r="30" fill="url(#g)"/>
+
+  <!-- chat bubble -->
+  <path d="M20 18h24c3 0 5 2 5 5v12c0 3-2 5-5 5H28l-7 6v-6h-1c-3 0-5-2-5-5V23c0-3 2-5 5-5z"
+        fill="white"/>
+
+  <!-- checkmark -->
+  <path d="M27 30l4 4 10-10" stroke="url(#g)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
