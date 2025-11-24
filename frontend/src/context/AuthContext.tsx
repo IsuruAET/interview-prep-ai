@@ -1,6 +1,9 @@
 import { createContext, useContext } from "react";
+import type { User } from "../hooks/useAuth";
 
 interface AuthContextType {
+  user: User | undefined;
+  isLoading: boolean;
   handleLogout: () => void;
 }
 

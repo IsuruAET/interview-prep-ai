@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { setTokenExpirationHandler } from "../utils/axioInstance";
 import { AuthContext } from "./AuthContext";
+import { useGetUserInfo } from "../hooks/useAuth";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { data: user, isLoading } = useGetUserInfo();
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem("token");
@@ -26,7 +28,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [handleLogout]);
 
   return (
-    <AuthContext.Provider value={{ handleLogout }}>
+    <AuthContext.Provider value={{ user, isLoading, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );
