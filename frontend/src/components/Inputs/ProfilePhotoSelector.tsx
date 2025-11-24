@@ -1,37 +1,89 @@
-import { useRef, useState, type ChangeEvent } from "react";
+import { useRef, useMemo, useEffect, type ChangeEvent } from "react";
 import { LuUser, LuUpload, LuTrash } from "react-icons/lu";
+import {
+  Controller,
+  type Control,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form";
 
-type ProfilePhotoSelectorProps = {
-  image: File | null;
-  setImage: React.Dispatch<React.SetStateAction<File | null>>;
+type ProfilePhotoSelectorProps<T extends FieldValues> = {
+  name: FieldPath<T>;
+  control: Control<T>;
+  disabled?: boolean;
 };
 
-const ProfilePhotoSelector = ({
-  image,
-  setImage,
-}: ProfilePhotoSelectorProps) => {
+const ProfilePhotoSelector = <T extends FieldValues>({
+  name,
+  control,
+  disabled = false,
+}: ProfilePhotoSelectorProps<T>) => {
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <ProfilePhotoSelectorInner
+          value={field.value ?? null}
+          onChange={field.onChange}
+          disabled={disabled}
+        />
+      )}
+    />
+  );
+};
+
+type ProfilePhotoSelectorInnerProps = {
+  value?: File | null;
+  onChange?: (file: File | null) => void;
+  disabled?: boolean;
+};
+
+const ProfilePhotoSelectorInner = ({
+  value,
+  onChange,
+  disabled = false,
+}: ProfilePhotoSelectorInnerProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Derive preview URL from value
+  const previewUrl = useMemo(() => {
+    return value ? URL.createObjectURL(value) : null;
+  }, [value]);
+
+  // Cleanup object URL when previewUrl changes
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Update the image state
-      setImage(file);
-
-      // Generate preview URL from the file
-      const preview = URL.createObjectURL(file);
-      setPreviewUrl(preview);
+      onChange?.(file);
+    }
+    // Reset input value to allow selecting the same file again
+    if (inputRef.current) {
+      inputRef.current.value = "";
     }
   };
 
   const handleRemoveImage = () => {
-    setImage(null);
-    setPreviewUrl(null);
+    onChange?.(null);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
   };
 
-  const onChooseFile = () => {
-    inputRef.current?.click();
+  const onChooseFile = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    e?.preventDefault();
+    if (!disabled) {
+      inputRef.current?.click();
+    }
   };
 
   return (
@@ -41,20 +93,31 @@ const ProfilePhotoSelector = ({
         accept="image/*"
         ref={inputRef}
         onChange={handleImageChange}
+        onClick={(e) => {
+          // Prevent the click event from bubbling up
+          e.stopPropagation();
+        }}
+        disabled={disabled}
         className="hidden"
       />
 
-      {!image ? (
+      {!value ? (
         <div
-          className="w-20 h-20 flex items-center justify-center bg-orange-50 rounded-full relative cursor-pointer"
+          className={`w-20 h-20 flex items-center justify-center bg-orange-50 rounded-full relative ${
+            disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+          }`}
           onClick={onChooseFile}
         >
           <LuUser className="text-4xl text-orange-500" />
 
           <button
             type="button"
-            className="w-8 h-8 flex items-center justify-center bg-linear-to-r from-orange-500/85 to-orange-600 text-white rounded-full absolute -bottom-1 -right-1 cursor-pointer"
-            onClick={onChooseFile}
+            disabled={disabled}
+            className="w-8 h-8 flex items-center justify-center bg-linear-to-r from-orange-500/85 to-orange-600 text-white rounded-full absolute -bottom-1 -right-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={(e) => {
+              e.stopPropagation();
+              onChooseFile(e);
+            }}
           >
             <LuUpload />
           </button>
@@ -68,7 +131,8 @@ const ProfilePhotoSelector = ({
           />
           <button
             type="button"
-            className="w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full absolute -bottom-1 -right-1 cursor-pointer"
+            disabled={disabled}
+            className="w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full absolute -bottom-1 -right-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleRemoveImage}
           >
             <LuTrash />

@@ -1,46 +1,62 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import Input from "../Inputs/Input";
-// import { useNavigate } from "react-router-dom";
-import { validateEmail } from "../../utils/helper";
 import ProfilePhotoSelector from "../Inputs/ProfilePhotoSelector";
+import {
+  registerSchema,
+  type RegisterFormData,
+} from "../../schemas/authSchemas";
+import { useRegister } from "../../hooks/useAuth";
+import { useMedia } from "../../hooks/useMedia";
 
 const SignUp = ({
   setCurrentPage,
 }: {
   setCurrentPage: (page: string) => void;
 }) => {
-  const [profilePic, setProfilePic] = useState<File | null>(null);
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const registerMutation = useRegister();
+  const uploadImageMutation = useMedia();
 
-  const [error, setError] = useState("");
+  const { handleSubmit, control } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
-  // const navigate = useNavigate();
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      let profileImageUrl = "";
 
-  // Handle Sign Up Form Submit
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+      // Upload image if present
+      if (data.profileImage) {
+        try {
+          const imgUploadResponse = await uploadImageMutation.mutateAsync(
+            data.profileImage
+          );
+          profileImageUrl = imgUploadResponse.imageUrl || "";
+        } catch (error) {
+          console.error("Image upload error:", error);
+          // Continue with registration even if image upload fails
+        }
+      }
 
-    if (!fullName) {
-      setError("Please enter your name");
-      return;
+      const response = await registerMutation.mutateAsync({
+        fullName: data.fullName,
+        email: data.email,
+        password: data.password,
+        profileImageUrl: profileImageUrl || undefined,
+      });
+
+      if (response.token) {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      // Error is handled by React Query and will be available in registerMutation.error
+      console.error("Signup error:", error);
     }
-
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-
-    if (!password) {
-      setError("Please enter the password.");
-      return;
-    }
-
-    setError("");
-
-    // SignUp API Call
   };
+
+  const isLoading = registerMutation.isPending || uploadImageMutation.isPending;
 
   return (
     <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
@@ -49,39 +65,50 @@ const SignUp = ({
         Join us today by entering your details below.
       </p>
 
-      <form onSubmit={handleSignUp}>
-        <ProfilePhotoSelector image={profilePic} setImage={setProfilePic} />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <ProfilePhotoSelector
+          name="profileImage"
+          control={control}
+          disabled={isLoading}
+        />
 
         <div className="grid grid-cols-1 gap-2">
           <Input
-            value={fullName}
-            onChange={({ target }) => setFullName(target.value)}
+            name="fullName"
+            control={control}
             label="Full Name"
             placeholder="John"
             type="text"
+            disabled={isLoading}
           />
 
           <Input
-            value={email}
-            onChange={({ target }) => setEmail(target.value)}
+            name="email"
+            control={control}
             label="Email Address"
             placeholder="john@example.com"
             type="text"
+            disabled={isLoading}
           />
 
           <Input
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
+            name="password"
+            control={control}
             label="Password"
             placeholder="Min 8 Characters"
             type="password"
+            disabled={isLoading}
           />
         </div>
 
-        {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
+        {registerMutation.error && (
+          <p className="text-red-500 text-xs pb-2.5">
+            {registerMutation.error.message}
+          </p>
+        )}
 
-        <button type="submit" className="btn-primary">
-          SIGN UP
+        <button type="submit" className="btn-primary" disabled={isLoading}>
+          {isLoading ? "SIGNING UP..." : "SIGN UP"}
         </button>
       </form>
 
@@ -91,6 +118,7 @@ const SignUp = ({
           type="button"
           className="font-medium text-primary underline cursor-pointer"
           onClick={() => setCurrentPage("login")}
+          disabled={isLoading}
         >
           Login
         </button>

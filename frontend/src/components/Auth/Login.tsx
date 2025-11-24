@@ -1,40 +1,31 @@
-import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import Input from "../Inputs/Input";
-import { validateEmail } from "../../utils/helper";
+import { loginSchema, type LoginFormData } from "../../schemas/authSchemas";
+import { useLogin } from "../../hooks/useAuth";
 
 const Login = ({
   setCurrentPage,
 }: {
   setCurrentPage: (page: string) => void;
 }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const loginMutation = useLogin();
 
-  const [error, setError] = useState<string | null>(null);
+  const { handleSubmit, control } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
-  // const navigate = useNavigate();
-
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-
-    if (!password) {
-      setError("Please enter the password.");
-      return;
-    }
-
-    setError("");
-
-    // Login API Call
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      // Login API Call
+      const response = await loginMutation.mutateAsync(data);
+      if (response.token) {
+        navigate("/dashboard");
+      }
     } catch (error) {
-      setError("Something went wrong. Please try again." + error);
+      // Error is handled by React Query and will be available in loginMutation.error
+      console.error("Login error:", error);
     }
   };
 
@@ -45,27 +36,41 @@ const Login = ({
         Please enter your details to log in
       </p>
 
-      <form onSubmit={handleLogin}>
-        <Input
-          value={email}
-          onChange={({ target }) => setEmail(target.value)}
-          label="Email Address"
-          placeholder="john@example.com"
-          type="text"
-        />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-4">
+          <Input
+            name="email"
+            control={control}
+            label="Email Address"
+            placeholder="john@example.com"
+            type="text"
+            disabled={loginMutation.isPending}
+          />
+        </div>
 
-        <Input
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-          label="Password"
-          placeholder="Min 8 Characters"
-          type="password"
-        />
+        <div className="mb-4">
+          <Input
+            name="password"
+            control={control}
+            label="Password"
+            placeholder="Min 8 Characters"
+            type="password"
+            disabled={loginMutation.isPending}
+          />
+        </div>
 
-        {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
+        {loginMutation.error && (
+          <p className="text-red-500 text-xs pb-2.5">
+            {loginMutation.error.message}
+          </p>
+        )}
 
-        <button type="submit" className="btn-primary">
-          LOGIN
+        <button
+          type="submit"
+          className="btn-primary"
+          disabled={loginMutation.isPending}
+        >
+          {loginMutation.isPending ? "LOGGING IN..." : "LOGIN"}
         </button>
       </form>
 
@@ -75,6 +80,7 @@ const Login = ({
           type="button"
           className="font-medium text-primary underline cursor-pointer"
           onClick={() => setCurrentPage("signup")}
+          disabled={loginMutation.isPending}
         >
           SignUp
         </button>
