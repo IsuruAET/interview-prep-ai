@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useGetUserInfo } from "../hooks/useGetUserInfo";
+import { useGetUserInfo } from "../hooks/useAuth";
 
 interface PublicRouteProps {
   children: React.ReactNode;

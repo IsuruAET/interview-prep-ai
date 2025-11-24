@@ -18,7 +18,7 @@ export const useMedia = () => {
       formData.append("image", file);
 
       const response = await axiosInstance.post<UploadMediaResponse>(
-        API_PATHS.AUTH.UPLOAD_IMAGE,
+        API_PATHS.IMAGE.UPLOAD_IMAGE,
         formData,
         {
           headers: {
