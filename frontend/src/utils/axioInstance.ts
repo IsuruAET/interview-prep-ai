@@ -1,6 +1,13 @@
 import axios from "axios";
 import { BASE_URL } from "./apiPaths";
 
+// Callback to handle token expiration - set by AuthProvider
+let onTokenExpired: (() => void) | null = null;
+
+export const setTokenExpirationHandler = (handler: () => void) => {
+  onTokenExpired = handler;
+};
+
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 60000,
@@ -35,8 +42,8 @@ axiosInstance.interceptors.response.use(
       if (error.response.status === 401) {
         // Token expired or invalid - automatically logout
         localStorage.removeItem("token");
-        // Dispatch event to clear user context and navigate
-        window.dispatchEvent(new Event("token-expired"));
+        // Call the registered handler if available
+        onTokenExpired?.();
       } else if (error.response.status === 500) {
         console.error("Server error. Please try again later.");
       }
@@ -48,4 +55,3 @@ axiosInstance.interceptors.response.use(
 );
 
 export default axiosInstance;
-

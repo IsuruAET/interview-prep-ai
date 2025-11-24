@@ -3,20 +3,23 @@ import AppRoutes from "./routes/AppRoutes";
 import ToastContainer from "./components/ToastContainer";
 import { ThemeProvider } from "./context/ThemeProvider";
 import { QueryProvider } from "./providers/QueryProvider";
-// import UserProvider from "./context/UserProvider";
+import { AuthProvider } from "./context/AuthProvider";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 
 function App() {
   return (
-    <QueryProvider>
-      <ThemeProvider>
-        {/* <UserProvider> */}
-        <Router>
-          <AppRoutes />
-          <ToastContainer />
-        </Router>
-        {/* </UserProvider> */}
-      </ThemeProvider>
-    </QueryProvider>
+    <ErrorBoundary>
+      <QueryProvider>
+        <ThemeProvider>
+          <Router>
+            <AuthProvider>
+              <AppRoutes />
+              <ToastContainer />
+            </AuthProvider>
+          </Router>
+        </ThemeProvider>
+      </QueryProvider>
+    </ErrorBoundary>
   );
 }
 

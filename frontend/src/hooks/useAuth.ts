@@ -2,16 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../utils/axioInstance";
 import { API_PATHS } from "../utils/apiPaths";
 import type { LoginFormData, RegisterFormData } from "../schemas/authSchemas";
+import type { User } from "./useGetUserInfo";
 import axios from "axios";
 
 interface AuthResponse {
   id: string;
-  user: {
-    _id: string;
-    fullName: string;
-    email: string;
-    profileImageUrl?: string;
-  };
+  user: User;
   token: string;
 }
 
