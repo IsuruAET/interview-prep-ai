@@ -1,5 +1,11 @@
+import DashboardLayout from "../components/layouts/DashboardLayout";
+
 const InterviewPrep = () => {
-  return <div>InterviewPrep</div>;
+  return (
+    <DashboardLayout>
+      <div>InterviewPrep</div>
+    </DashboardLayout>
+  );
 };
 
 export default InterviewPrep;

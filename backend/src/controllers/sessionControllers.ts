@@ -152,7 +152,7 @@ export const deleteSession = async (
     // Delete all questions associated with the session
     await Question.deleteMany({ session: session._id });
 
-    await Session.deleteOne();
+    await Session.findByIdAndDelete(session._id);
     return res.status(200).json({ message: "Session deleted successfully" });
   } catch (error: unknown) {
     if (error instanceof Error) {
