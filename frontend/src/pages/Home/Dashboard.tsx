@@ -9,6 +9,7 @@ import CreateSessionForm from "./CreateSessionForm";
 import { useGetAllSessions, useDeleteSession } from "../../hooks/useSessions";
 import type { Session } from "../../types/session";
 import Loader from "../../components/Loader/Loader";
+import DeleteAlertContent from "../../components/DeleteAlertContent";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -103,29 +104,13 @@ const Dashboard = () => {
       <Modal
         isOpen={openDeleteAlert.open}
         onClose={() => setOpenDeleteAlert({ open: false, data: null })}
-        title="Delete Session"
+        title="Delete Alert"
       >
-        <div className="p-6">
-          <p className="text-gray-700 mb-6">
-            Are you sure you want to delete the session "
-            {openDeleteAlert.data?.role}"? This action cannot be undone.
-          </p>
-          <div className="flex gap-3 justify-end">
-            <button
-              onClick={() => setOpenDeleteAlert({ open: false, data: null })}
-              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              disabled={deleteSessionMutation.isPending}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDeleteSession}
-              className="px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={deleteSessionMutation.isPending}
-            >
-              {deleteSessionMutation.isPending ? "Deleting..." : "Delete"}
-            </button>
-          </div>
+        <div className="">
+          <DeleteAlertContent
+            content="Are you sure you want to delete this session details?"
+            onDelete={handleDeleteSession}
+          />
         </div>
       </Modal>
     </DashboardLayout>

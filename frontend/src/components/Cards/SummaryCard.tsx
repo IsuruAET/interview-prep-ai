@@ -1,6 +1,5 @@
 import { LuTrash2 } from "react-icons/lu";
-import { getInitials } from "../../utils/helper";
-import { DateTime } from "luxon";
+import { formatDate, getInitials } from "../../utils/helper";
 
 interface SummaryCardProps {
   colors: { id: number; bgColor: string };
@@ -25,9 +24,6 @@ const SummaryCard = ({
   onSelect,
   onDelete,
 }: SummaryCardProps) => {
-  const formattedDate = DateTime.fromISO(
-    typeof lastUpdated === "string" ? lastUpdated : lastUpdated.toISOString()
-  ).toLocaleString(DateTime.DATE_MED);
   return (
     <div
       className="bg-white border border-gray-300/40 rounded-xl p-2 overflow-hidden cursor-pointer hover:shadow-xl shadow-gray-100 relative group"
@@ -80,7 +76,7 @@ const SummaryCard = ({
           </div>
 
           <div className="text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded-full">
-            Last Updated: {formattedDate}
+            Last Updated: {formatDate(lastUpdated)}
           </div>
         </div>
 

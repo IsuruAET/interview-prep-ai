@@ -16,12 +16,28 @@ export interface GeneratedQuestion {
   answer: string;
 }
 
+export interface GenerateExplanationRequest {
+  question: string;
+  role?: string;
+  experience?: string;
+  topicsToFocus?: string;
+}
+
+export interface GenerateExplanationResponse {
+  title: string;
+  explanation: string;
+}
+
 interface GenerateQuestionsError {
   message: string;
 }
 
 export const useGenerateQuestions = () => {
-  return useMutation<GeneratedQuestion[], GenerateQuestionsError, GenerateQuestionsRequest>({
+  return useMutation<
+    GeneratedQuestion[],
+    GenerateQuestionsError,
+    GenerateQuestionsRequest
+  >({
     mutationFn: async (data: GenerateQuestionsRequest) => {
       const response = await axiosInstance.post<GeneratedQuestion[]>(
         API_PATHS.AI.GENERATE_QUESTIONS,
@@ -41,3 +57,27 @@ export const useGenerateQuestions = () => {
   });
 };
 
+export const useGenerateExplanation = () => {
+  return useMutation<
+    GenerateExplanationResponse,
+    GenerateQuestionsError,
+    GenerateExplanationRequest
+  >({
+    mutationFn: async (data: GenerateExplanationRequest) => {
+      const response = await axiosInstance.post<GenerateExplanationResponse>(
+        API_PATHS.AI.GENERATE_EXPLANATION,
+        data
+      );
+      return response.data;
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "Failed to generate explanation"
+        );
+      } else {
+        toast.error("Failed to generate explanation");
+      }
+    },
+  });
+};

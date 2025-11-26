@@ -10,7 +10,7 @@ import { ensureDBConnection } from "../middleware/dbMiddleware";
 const router = Router();
 
 router.post("/add", ensureDBConnection, protect, addQuestionToSession);
-router.post("/:id/pin", ensureDBConnection, protect, togglePinQuestion);
+router.patch("/:id/pin", ensureDBConnection, protect, togglePinQuestion);
 router.post("/:id/note", ensureDBConnection, protect, updateQuestionNote);
 
 export default router;

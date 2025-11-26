@@ -101,7 +101,7 @@ export const togglePinQuestion = async (
 };
 
 // @desc    Add note for a question
-// @route   POST /api/questions/:id/note
+// @route   PATCH /api/questions/:id/note
 // @access  Private
 export const updateQuestionNote = async (
   req: AuthenticatedRequest,
