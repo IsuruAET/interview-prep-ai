@@ -16,7 +16,7 @@ const ToastContainer = () => {
         },
         success: {
           iconTheme: {
-            primary: "#875cf5",
+            primary: "#ff9324",
             secondary: theme === "dark" ? "#242526" : "#ffffff",
           },
         },

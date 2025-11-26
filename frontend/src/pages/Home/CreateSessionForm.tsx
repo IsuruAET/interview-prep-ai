@@ -8,6 +8,7 @@ import {
   type CreateSessionFormData,
 } from "../../schemas/sessionSchemas";
 import { useCreateSession } from "../../hooks/useSessions";
+import { useGenerateQuestions } from "../../hooks/useAI";
 
 interface CreateSessionFormProps {
   onClose: () => void;
@@ -16,6 +17,7 @@ interface CreateSessionFormProps {
 const CreateSessionForm = ({ onClose }: CreateSessionFormProps) => {
   const navigate = useNavigate();
   const createSession = useCreateSession();
+  const generateQuestions = useGenerateQuestions();
 
   const { control, handleSubmit } = useForm<CreateSessionFormData>({
     resolver: zodResolver(createSessionSchema),
@@ -29,13 +31,26 @@ const CreateSessionForm = ({ onClose }: CreateSessionFormProps) => {
 
   const onSubmit = async (data: CreateSessionFormData) => {
     try {
-      const result = await createSession.mutateAsync(data);
+      // First, generate AI questions
+      const generatedQuestions = await generateQuestions.mutateAsync({
+        role: data.role,
+        experience: data.experience,
+        topicsToFocus: data.topicsToFocus,
+        numberOfQuestions: 10, // You can make this configurable if needed
+      });
+
+      // Then create session with the generated questions
+      const result = await createSession.mutateAsync({
+        ...data,
+        questions: generatedQuestions,
+      });
+
       if (result?._id) {
         onClose();
         navigate(`/interview-prep/${result._id}`);
       }
     } catch (error) {
-      // Error is handled by React Query and will be available in createSession.error
+      // Error is handled by React Query and will be available in createSession.error or generateQuestions.error
       console.error("Create session error:", error);
     }
   };
@@ -58,7 +73,7 @@ const CreateSessionForm = ({ onClose }: CreateSessionFormProps) => {
             label="Role"
             placeholder="(e.g. Software Engineer, Product Manager, etc.)"
             type="text"
-            disabled={createSession.isPending}
+            disabled={createSession.isPending || generateQuestions.isPending}
           />
         </div>
 
@@ -69,7 +84,7 @@ const CreateSessionForm = ({ onClose }: CreateSessionFormProps) => {
             label="Years of Experience"
             placeholder="(e.g. 1 year, 3-5 years, 5+ years, etc.)"
             type="text"
-            disabled={createSession.isPending}
+            disabled={createSession.isPending || generateQuestions.isPending}
           />
         </div>
 
@@ -80,7 +95,7 @@ const CreateSessionForm = ({ onClose }: CreateSessionFormProps) => {
             label="Topics to Focus On"
             placeholder="(Comma-Separated List, e.g. JavaScript, React, Node.js, etc.)"
             type="text"
-            disabled={createSession.isPending}
+            disabled={createSession.isPending || generateQuestions.isPending}
           />
         </div>
 
@@ -91,25 +106,27 @@ const CreateSessionForm = ({ onClose }: CreateSessionFormProps) => {
             label="Description"
             placeholder="(Any specific goal or notes for this session)"
             type="text"
-            disabled={createSession.isPending}
+            disabled={createSession.isPending || generateQuestions.isPending}
           />
         </div>
 
-        {createSession.error && (
+        {(createSession.error || generateQuestions.error) && (
           <p className="text-red-500 text-xs pb-2.5">
-            {createSession.error.message}
+            {createSession.error?.message || generateQuestions.error?.message}
           </p>
         )}
 
         <button
           type="submit"
           className="btn-primary"
-          disabled={createSession.isPending}
+          disabled={createSession.isPending || generateQuestions.isPending}
         >
-          {createSession.isPending ? (
+          {createSession.isPending || generateQuestions.isPending ? (
             <>
               <ButtonSpinner />
-              CREATING...
+              {generateQuestions.isPending
+                ? "GENERATING QUESTIONS..."
+                : "CREATING..."}
             </>
           ) : (
             "CREATE SESSION"

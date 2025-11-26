@@ -21,11 +21,18 @@ export interface Session {
   updatedAt: string;
 }
 
+export interface CreateSessionQuestion {
+  question: string;
+  answer: string;
+  notes?: string;
+}
+
 export interface CreateSessionData {
   role: string;
   topicsToFocus: string;
   experience: string;
   description: string;
+  questions?: CreateSessionQuestion[];
 }
 
 export interface CreateSessionResponse {
