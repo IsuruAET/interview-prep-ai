@@ -9,6 +9,7 @@ export interface User {
   fullName: string;
   email: string;
   profileImageUrl?: string;
+  profileDescription?: string;
 }
 
 interface AuthResponse {
@@ -106,5 +107,38 @@ export const useGetUserInfo = () => {
     enabled: !!token, // Only run if token exists
     retry: false, // Don't retry on failure (will handle redirect)
     staleTime: Infinity, // Consider data fresh forever (until manual invalidation)
+  });
+};
+
+// Update profile description mutation
+export const useUpdateProfileDescription = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    { message: string; user: User },
+    AuthError,
+    { profileDescription: string }
+  >({
+    mutationFn: async (data: { profileDescription: string }) => {
+      const response = await axiosInstance.put<{ message: string; user: User }>(
+        API_PATHS.AUTH.UPDATE_PROFILE_DESCRIPTION,
+        data
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      // Update user data in query cache
+      queryClient.setQueryData(["user"], data.user);
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        throw {
+          message:
+            error.response?.data?.message ||
+            "Failed to update profile description",
+        };
+      }
+      throw { message: "Failed to update profile description" };
+    },
   });
 };

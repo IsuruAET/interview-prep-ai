@@ -28,6 +28,14 @@ export interface GenerateExplanationResponse {
   explanation: string;
 }
 
+export interface GenerateCoverLetterRequest {
+  companyDescription: string;
+}
+
+export interface GenerateCoverLetterResponse {
+  coverLetter: string;
+}
+
 interface GenerateQuestionsError {
   message: string;
 }
@@ -77,6 +85,31 @@ export const useGenerateExplanation = () => {
         );
       } else {
         toast.error("Failed to generate explanation");
+      }
+    },
+  });
+};
+
+export const useGenerateCoverLetter = () => {
+  return useMutation<
+    GenerateCoverLetterResponse,
+    GenerateQuestionsError,
+    GenerateCoverLetterRequest
+  >({
+    mutationFn: async (data: GenerateCoverLetterRequest) => {
+      const response = await axiosInstance.post<GenerateCoverLetterResponse>(
+        API_PATHS.AI.GENERATE_COVER_LETTER,
+        data
+      );
+      return response.data;
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "Failed to generate cover letter"
+        );
+      } else {
+        toast.error("Failed to generate cover letter");
       }
     },
   });

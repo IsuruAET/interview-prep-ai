@@ -9,6 +9,7 @@ import Loader from "../components/Loader/Loader";
 const LandingPage = lazy(() => import("../pages/LandingPage"));
 const Dashboard = lazy(() => import("../pages/Home/Dashboard"));
 const InterviewPrep = lazy(() => import("../pages/InterviewPrep"));
+const CoverLetter = lazy(() => import("../pages/CoverLetter"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
 interface RouteConfig {
@@ -25,6 +26,7 @@ const routeConfig: RouteConfig[] = [
     component: InterviewPrep,
     isProtected: true,
   },
+  { path: "/cover-letter", component: CoverLetter, isProtected: true },
 ];
 
 const AppRoutes = () => {

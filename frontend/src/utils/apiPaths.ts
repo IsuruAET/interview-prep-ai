@@ -5,6 +5,7 @@ export const API_PATHS = {
     LOGIN: "/api/v1/auth/login", // Authenticate user and return token
     REGISTER: "/api/v1/auth/register", // Register user and return token
     GET_USER_INFO: "/api/v1/auth/getUser", // Get user info and return user info
+    UPDATE_PROFILE_DESCRIPTION: "/api/v1/auth/update-profile-description", // Update profile description and return user info
   },
   IMAGE: {
     UPLOAD_IMAGE: "/api/v1/auth/uploadImage", // Upload image and return image url
@@ -12,6 +13,7 @@ export const API_PATHS = {
   AI: {
     GENERATE_QUESTIONS: "/api/v1/ai/generate-questions", // Generate questions and return questions list
     GENERATE_EXPLANATION: "/api/v1/ai/generate-explanation", // Generate explanation and return explanation
+    GENERATE_COVER_LETTER: "/api/v1/ai/generate-cover-letter", // Generate cover letter and return cover letter
   },
   SESSION: {
     CREATE_SESSION: "/api/v1/sessions/create", // Create session and return session id

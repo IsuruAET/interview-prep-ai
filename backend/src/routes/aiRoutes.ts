@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   generateInterviewQuestions,
   generateConceptExplanation,
+  generateCoverLetter,
 } from "../controllers/aiControllers";
 import { protect } from "../middleware/authMiddleware";
 import { ensureDBConnection } from "../middleware/dbMiddleware";
@@ -19,6 +20,12 @@ router.post(
   ensureDBConnection,
   protect,
   generateConceptExplanation
+);
+router.post(
+  "/generate-cover-letter",
+  ensureDBConnection,
+  protect,
+  generateCoverLetter
 );
 
 export default router;

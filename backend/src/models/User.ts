@@ -7,6 +7,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   profileImageUrl?: string | null;
+  profileDescription?: string | null;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -17,6 +18,7 @@ const UserSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profileImageUrl: { type: String, default: null },
+    profileDescription: { type: String, default: null },
   },
   { timestamps: true }
 );

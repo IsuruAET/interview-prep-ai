@@ -4,6 +4,7 @@ import { AuthenticatedRequest } from "../types/express";
 import {
   generateConceptExplanationPrompt,
   generateInterviewQuestionsPrompt,
+  generateCoverLetterPrompt,
 } from "../utils/prompts";
 
 // Initialize Groq client
@@ -70,7 +71,7 @@ export const generateInterviewQuestions = async (
       .trim(); // Remove any extra whitespace
 
     const parsedData = JSON.parse(cleanedText);
-    
+
     // Extract questions array if it exists, otherwise return the data as-is
     const data = parsedData.questions || parsedData;
 
@@ -137,6 +138,89 @@ export const generateConceptExplanation = async (
     if (error instanceof Error) {
       return res.status(500).json({
         message: "Error generating concept explanation",
+        error: error.message,
+      });
+    }
+    return res.status(500).json({ message: "Unknown error occurred" });
+  }
+};
+
+// @desc    Generate cover letter based on profile and company description
+// @route   POST /api/ai/generate-cover-letter
+// @access  Private
+export const generateCoverLetter = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<Response> => {
+  try {
+    const { companyDescription } = req.body || {};
+
+    if (!companyDescription) {
+      return res.status(400).json({
+        message: "Company description is required",
+      });
+    }
+
+    // Get user's profile description
+    const User = (await import("../models/User")).default;
+    const user = await User.findById(req.user?._id).select(
+      "profileDescription"
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if (!user.profileDescription) {
+      return res.status(400).json({
+        message:
+          "Profile description is required. Please save your profile first.",
+      });
+    }
+
+    if (!process.env.GROQ_API_KEY) {
+      return res.status(500).json({
+        message: "Groq API key is not configured",
+      });
+    }
+
+    const prompt = generateCoverLetterPrompt(
+      user.profileDescription,
+      companyDescription
+    );
+
+    const response = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      response_format: { type: "json_object" },
+    });
+
+    const rawText = response.choices[0]?.message?.content || "";
+
+    // Clean it: Remove ```json and ``` from beginning and end (if present)
+    const cleanedText = rawText
+      .replace(/^```json\s*/, "") // Remove starting ```json
+      .replace(/```$/, "") // Remove ending ```
+      .trim(); // Remove any extra whitespace
+
+    const parsedData = JSON.parse(cleanedText);
+
+    // Extract coverLetter if it exists, otherwise return the data as-is
+    const data = parsedData.coverLetter || parsedData;
+
+    return res.status(200).json({ coverLetter: data });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({
+        message: "Error generating cover letter",
         error: error.message,
       });
     }
