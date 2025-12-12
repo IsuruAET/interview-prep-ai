@@ -1,14 +1,14 @@
 import { Response } from "express";
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 import { AuthenticatedRequest } from "../types/express";
 import {
   generateConceptExplanationPrompt,
   generateInterviewQuestionsPrompt,
 } from "../utils/prompts";
 
-// Initialize Google GenAI client
-const genAI = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY || "",
+// Initialize Groq client
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY || "",
 });
 
 // @desc    Generate interview questions based on role, experience, and topics
@@ -43,26 +43,36 @@ export const generateInterviewQuestions = async (
       numberOfQuestions
     );
 
-    if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_GENAI_API_KEY) {
+    if (!process.env.GROQ_API_KEY) {
       return res.status(500).json({
-        message: "Gemini API key is not configured",
+        message: "Groq API key is not configured",
       });
     }
 
-    const response = await genAI.models.generateContent({
-      model: "gemini-2.0-flash-lite",
-      contents: prompt,
+    const response = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      response_format: { type: "json_object" },
     });
 
-    const rawText = response.text || "";
+    const rawText = response.choices[0]?.message?.content || "";
 
-    // Clean it: Remove ```json and ``` from beginning and end
+    // Clean it: Remove ```json and ``` from beginning and end (if present)
     const cleanedText = rawText
       .replace(/^```json\s*/, "") // Remove starting ```json
       .replace(/```$/, "") // Remove ending ```
       .trim(); // Remove any extra whitespace
 
-    const data = JSON.parse(cleanedText);
+    const parsedData = JSON.parse(cleanedText);
+    
+    // Extract questions array if it exists, otherwise return the data as-is
+    const data = parsedData.questions || parsedData;
 
     return res.status(200).json(data);
   } catch (error: unknown) {
@@ -92,20 +102,27 @@ export const generateConceptExplanation = async (
       });
     }
 
-    if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_GENAI_API_KEY) {
+    if (!process.env.GROQ_API_KEY) {
       return res.status(500).json({
-        message: "Gemini API key is not configured",
+        message: "Groq API key is not configured",
       });
     }
 
     const prompt = generateConceptExplanationPrompt(question);
 
-    const response = await genAI.models.generateContent({
-      model: "gemini-2.0-flash-lite",
-      contents: prompt,
+    const response = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      response_format: { type: "json_object" },
     });
 
-    const rawText = response.text || "";
+    const rawText = response.choices[0]?.message?.content || "";
 
     // Clean it: Remove ```json and ``` from beginning and end
     const cleanedText = rawText
