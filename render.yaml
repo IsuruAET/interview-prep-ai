@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: interview-prep-ai-backend
+    name: interview-prep-ai-api
     env: node
     rootDir: backend
     buildCommand: npm install && npm run build
@@ -25,4 +25,3 @@ services:
         sync: false
       - key: AWS_S3_BUCKET_NAME
         sync: false
-
