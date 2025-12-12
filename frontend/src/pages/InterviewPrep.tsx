@@ -155,12 +155,12 @@ const InterviewPrep = () => {
       />
 
       <div className="container mx-auto pt-4 pb-4 px-4 md:px-0">
-        <h2 className="text-lg font-semibold color-black">Interview Q & A</h2>
+        <h2 className="text-base sm:text-lg font-semibold color-black">Interview Q & A</h2>
 
         <div className="grid grid-cols-12 gap-4 mt-5 mb-10">
           <div
             className={`col-span-12 ${
-              openLeanMoreDrawer ? "md:col-span-7" : "md:col-span-8"
+              openLeanMoreDrawer ? "md:col-span-7 lg:col-span-8" : "md:col-span-12 lg:col-span-8"
             }`}
           >
             <AnimatePresence>
@@ -193,9 +193,9 @@ const InterviewPrep = () => {
                       />
 
                       {sortedQuestions.length === index + 1 && (
-                        <div className="flex items-center justify-center mt-5">
+                        <div className="flex items-center justify-center mt-4 sm:mt-5">
                           <button
-                            className="flex items-center gap-3 text-sm text-white font-medium bg-black px-5 py-2 mr-2 rounded text-nowrap cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-white font-medium bg-black px-4 sm:px-5 py-1.5 sm:py-2 rounded text-nowrap cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={
                               isUpdateLoaded ||
                               generateQuestionsMutation.isPending
@@ -206,7 +206,7 @@ const InterviewPrep = () => {
                             generateQuestionsMutation.isPending ? (
                               <ButtonSpinner />
                             ) : (
-                              <LuListCollapse className="text-lg" />
+                              <LuListCollapse className="text-base sm:text-lg" />
                             )}{" "}
                             Load More
                           </button>

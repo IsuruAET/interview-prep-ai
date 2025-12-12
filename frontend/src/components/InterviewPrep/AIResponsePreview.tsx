@@ -9,7 +9,7 @@ const AIResponsePreview = ({ content }: { content: string }) => {
   if (!content) return null;
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="text-[14px] prose prose-slate dark:prose-invert max-w-none">
+      <div className="text-xs sm:text-sm md:text-[14px] prose prose-slate dark:prose-invert max-w-none">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
@@ -23,39 +23,57 @@ const AIResponsePreview = ({ content }: { content: string }) => {
                 <CodeBlock code={String(children).trim()} language={language} />
               ) : (
                 <code
-                  className="px-1 py-0.5 bg-gray-100 rounded text-sm"
+                  className="px-1 py-0.5 bg-gray-100 rounded text-xs sm:text-sm wrap-break-word"
                   {...props}
                 >
                   {children}
                 </code>
               );
             },
-            p: ({ children }) => <p className="mb-4 leading-5">{children}</p>,
+            p: ({ children }) => (
+              <p className="mb-3 sm:mb-4 leading-relaxed sm:leading-5 wrap-break-word">
+                {children}
+              </p>
+            ),
             strong: ({ children }) => <strong className="">{children}</strong>,
             em: ({ children }) => <em className="">{children}</em>,
             ul: ({ children }) => (
-              <ul className="list-disc pl-6 space-y-2 my-4">{children}</ul>
+              <ul className="list-disc pl-4 sm:pl-6 space-y-1 sm:space-y-2 my-3 sm:my-4">
+                {children}
+              </ul>
             ),
             ol: ({ children }) => (
-              <ol className="list-decimal pl-6 space-y-2 my-4">{children}</ol>
+              <ol className="list-decimal pl-4 sm:pl-6 space-y-1 sm:space-y-2 my-3 sm:my-4">
+                {children}
+              </ol>
             ),
-            li: ({ children }) => <li className="mb-1">{children}</li>,
+            li: ({ children }) => (
+              <li className="mb-1 wrap-break-word">{children}</li>
+            ),
             blockquote: ({ children }) => (
-              <blockquote className="border-l-4 border-gray-200 pl-4 italic my-4">
+              <blockquote className="border-l-4 border-gray-200 pl-3 sm:pl-4 italic my-3 sm:my-4 wrap-break-word">
                 {children}
               </blockquote>
             ),
             h1: ({ children }) => (
-              <h1 className="text-2xl font-bold mt-6 mb-4">{children}</h1>
+              <h1 className="text-xl sm:text-2xl font-bold mt-4 sm:mt-6 mb-3 sm:mb-4 wrap-break-word">
+                {children}
+              </h1>
             ),
             h2: ({ children }) => (
-              <h2 className="text-xl font-bold mt-6 mb-3">{children}</h2>
+              <h2 className="text-lg sm:text-xl font-bold mt-4 sm:mt-6 mb-2 sm:mb-3 wrap-break-word">
+                {children}
+              </h2>
             ),
             h3: ({ children }) => (
-              <h3 className="text-lg font-bold mt-5 mb-2">{children}</h3>
+              <h3 className="text-base sm:text-lg font-bold mt-3 sm:mt-5 mb-2 wrap-break-word">
+                {children}
+              </h3>
             ),
             h4: ({ children }) => (
-              <h4 className="text-base font-bold mt-4 mb-2">{children}</h4>
+              <h4 className="text-sm sm:text-base font-bold mt-3 sm:mt-4 mb-2 wrap-break-word">
+                {children}
+              </h4>
             ),
             a: ({ children, href }) => (
               <a href={href} className="text-blue-600 hover:underline">
@@ -63,8 +81,8 @@ const AIResponsePreview = ({ content }: { content: string }) => {
               </a>
             ),
             table: ({ children }) => (
-              <div className="overflow-x-auto my-4">
-                <table className="min-w-full divide-y divide-gray-300 border border-gray-200">
+              <div className="overflow-x-auto my-3 sm:my-4 -mx-2 sm:mx-0">
+                <table className="min-w-full divide-y divide-gray-300 border border-gray-200 text-xs sm:text-sm">
                   {children}
                 </table>
               </div>
@@ -77,12 +95,12 @@ const AIResponsePreview = ({ content }: { content: string }) => {
             ),
             tr: ({ children }) => <tr className="">{children}</tr>,
             th: ({ children }) => (
-              <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-2 sm:px-3 py-1.5 sm:py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {children}
               </th>
             ),
             td: ({ children }) => (
-              <td className="px-3 py-2 whitespace-nowrap text-sm">
+              <td className="px-2 sm:px-3 py-1.5 sm:py-2 wrap-break-word sm:whitespace-nowrap text-xs sm:text-sm">
                 {children}
               </td>
             ),
@@ -114,26 +132,26 @@ function CodeBlock({ code, language }: CodeBlockProps) {
   };
 
   return (
-    <div className="relative my-6 rounded-lg overflow-hidden bg-gray-50 border border-gray-200">
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200">
-        <div className="flex items-center space-x-2">
-          <LuCode size={16} className="text-gray-500" />
-          <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+    <div className="relative my-4 sm:my-6 rounded-lg overflow-hidden bg-gray-50 border border-gray-200">
+      <div className="flex items-center justify-between px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 border-b border-gray-200">
+        <div className="flex items-center space-x-1.5 sm:space-x-2 min-w-0">
+          <LuCode size={14} className="text-gray-500 shrink-0 sm:w-4 sm:h-4" />
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-600 uppercase tracking-wide truncate">
             {language || "Code"}
           </span>
         </div>
         <button
           onClick={copyCode}
-          className="text-gray-500 hover:text-gray-700 focus:outline-none relative group"
+          className="text-gray-500 hover:text-gray-700 focus:outline-none relative group shrink-0 p-1"
           aria-label="Copy code"
         >
           {copied ? (
-            <LuCheck size={16} className="text-green-600" />
+            <LuCheck size={14} className="text-green-600 sm:w-4 sm:h-4" />
           ) : (
-            <LuCopy size={16} />
+            <LuCopy size={14} className="sm:w-4 sm:h-4" />
           )}
           {copied && (
-            <span className="absolute -top-8 right-0 bg-black text-white text-xs rounded-md px-2 py-1 opacity-80 group-hover:opacity-100 transition">
+            <span className="absolute -top-8 right-0 bg-black text-white text-[10px] sm:text-xs rounded-md px-1.5 sm:px-2 py-0.5 sm:py-1 opacity-80 group-hover:opacity-100 transition whitespace-nowrap">
               Copied
             </span>
           )}
@@ -144,11 +162,13 @@ function CodeBlock({ code, language }: CodeBlockProps) {
         language={language}
         style={oneLight}
         customStyle={{
-          fontSize: 12.5,
+          fontSize: "11px",
           margin: 0,
-          padding: "1rem",
+          padding: "0.75rem",
           background: "transparent",
         }}
+        PreTag="div"
+        className="overflow-x-auto"
       >
         {code}
       </SyntaxHighlighter>

@@ -30,9 +30,9 @@ const Login = ({
   };
 
   return (
-    <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
-      <h3 className="text-lg font-semibold text-black">Welcome Back</h3>
-      <p className="text-xs text-slate-700 mt-[5px] mb-6">
+    <div className="w-full max-w-[90vw] sm:max-w-md md:w-[33vw] p-5 sm:p-7 flex flex-col justify-center">
+      <h3 className="text-base sm:text-lg font-semibold text-black">Welcome Back</h3>
+      <p className="text-xs text-slate-700 mt-[5px] mb-4 sm:mb-6">
         Please enter your details to log in
       </p>
 

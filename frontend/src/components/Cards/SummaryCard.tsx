@@ -66,22 +66,22 @@ const SummaryCard = ({
       </div>
 
       <div className="px-3 pb-3">
-        <div className="flex items-center gap-3 mt-4">
-          <div className="text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded-full">
-            Experience: {experience} {Number(experience) > 1 ? "years" : "year"}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-4">
+          <div className="text-[9px] sm:text-[10px] font-medium text-black px-2 sm:px-3 py-1 border-[0.5px] border-gray-900 rounded-full whitespace-nowrap">
+            Exp: {experience} {Number(experience) > 1 ? "yrs" : "yr"}
           </div>
 
-          <div className="text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded-full">
-            Questions: {questions}
+          <div className="text-[9px] sm:text-[10px] font-medium text-black px-2 sm:px-3 py-1 border-[0.5px] border-gray-900 rounded-full whitespace-nowrap">
+            Q: {questions}
           </div>
 
-          <div className="text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded-full">
-            Last Updated: {formatDate(lastUpdated)}
+          <div className="text-[9px] sm:text-[10px] font-medium text-black px-2 sm:px-3 py-1 border-[0.5px] border-gray-900 rounded-full whitespace-nowrap">
+            {formatDate(lastUpdated)}
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-[12px] text-gray-500 font-medium line-clamp-2 mt-3">
+        <p className="text-[11px] sm:text-[12px] text-gray-500 font-medium line-clamp-2 mt-3 leading-relaxed">
           {description}
         </p>
       </div>

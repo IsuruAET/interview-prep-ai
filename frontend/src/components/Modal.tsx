@@ -32,20 +32,21 @@ const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/40">
+    <div className="fixed inset-0 z-50 flex justify-center items-center w-screen h-screen bg-black/40 p-4">
       {/* Modal Content */}
-      <div className="relative flex flex-col bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="relative flex flex-col bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-md md:max-w-lg lg:max-w-xl max-h-[90vh]">
         {/* Modal Header */}
         {!hideHeader && (
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h3 className="md:text-lg font-medium text-gray-900">{title}</h3>
+          <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 truncate pr-8">{title}</h3>
           </div>
         )}
 
         <button
           type="button"
-          className="flex text-gray-400 bg-transparent hover:bg-orange-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 justify-center items-center absolute top-3.5 right-3.5 cursor-pointer"
+          className="flex text-gray-400 bg-transparent hover:bg-orange-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 justify-center items-center absolute top-2.5 sm:top-3.5 right-2.5 sm:right-3.5 cursor-pointer z-10"
           onClick={onClose}
+          aria-label="Close modal"
         >
           <svg
             className="w-3 h-3"

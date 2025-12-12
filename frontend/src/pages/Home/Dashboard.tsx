@@ -49,8 +49,8 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="container mx-auto pt-4 pb-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-7 pt-1 pb-6 px-4 md:px-0">
+      <div className="container mx-auto pt-4 pb-20 sm:pb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-7 pt-1 pb-6 px-4 md:px-0">
           {sessions.map((session, index) => (
             <SummaryCard
               key={session._id}
@@ -72,8 +72,8 @@ const Dashboard = () => {
         </div>
 
         {sessions.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <p className="text-gray-500 text-lg">
+          <div className="flex flex-col items-center justify-center py-12 sm:py-20 px-4">
+            <p className="text-gray-500 text-base sm:text-lg text-center">
               No sessions yet. Create your first one!
             </p>
           </div>
@@ -81,9 +81,11 @@ const Dashboard = () => {
 
         <button
           onClick={() => setOpenCreateModal(true)}
-          className="h-12 md:h-12 flex items-center justify-center gap-3 bg-linear-to-r from-[#FF9324] to-[#E99A4B] text-sm font-semibold text-white px-7 py-2.5 rounded-full hover:bg-black hover:text-white transition-colors cursor-pointer hover:shadow-2xl hover:shadow-orange-300 fixed bottom-10 md:bottom-20 right-10 md:right-20"
+          className="h-12 flex items-center justify-center gap-2 sm:gap-3 bg-linear-to-r from-[#FF9324] to-[#E99A4B] text-xs sm:text-sm font-semibold text-white px-4 sm:px-7 py-2.5 rounded-full hover:bg-black hover:text-white transition-colors cursor-pointer hover:shadow-2xl hover:shadow-orange-300 fixed bottom-6 sm:bottom-10 md:bottom-20 right-4 sm:right-10 md:right-20 z-20 shadow-lg"
         >
-          <LuPlus className="text-2xl text-white" /> Add New
+          <LuPlus className="text-xl sm:text-2xl text-white" /> 
+          <span className="hidden sm:inline">Add New</span>
+          <span className="sm:hidden">New</span>
         </button>
       </div>
 

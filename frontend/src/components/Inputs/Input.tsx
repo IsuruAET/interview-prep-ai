@@ -128,14 +128,14 @@ const InputInner = forwardRef<HTMLInputElement, InputInnerProps>(
 
     return (
       <div>
-        {label && <label className="text-[13px] text-slate-800">{label}</label>}
+        {label && <label className="text-xs sm:text-[13px] text-slate-800">{label}</label>}
 
         <div className="input-box">
           <input
             ref={setRefs}
             type={isPassword ? (showPassword ? "text" : "password") : type}
             placeholder={placeholder}
-            className={`w-full bg-transparent outline-none text-base text-text-primary placeholder:text-text-secondary transition-colors ${
+            className={`w-full bg-transparent outline-none text-sm sm:text-base text-text-primary placeholder:text-text-secondary transition-colors ${
               isNumber
                 ? "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 : ""
@@ -153,14 +153,14 @@ const InputInner = forwardRef<HTMLInputElement, InputInnerProps>(
             <>
               {showPassword ? (
                 <FaRegEye
-                  size={22}
-                  className="text-primary cursor-pointer shrink-0"
+                  size={20}
+                  className="text-primary cursor-pointer shrink-0 sm:w-[22px] sm:h-[22px]"
                   onClick={() => toggleShowPassword()}
                 />
               ) : (
                 <FaRegEyeSlash
-                  size={22}
-                  className="text-slate-400 cursor-pointer transition-colors shrink-0"
+                  size={20}
+                  className="text-slate-400 cursor-pointer transition-colors shrink-0 sm:w-[22px] sm:h-[22px]"
                   onClick={() => toggleShowPassword()}
                 />
               )}

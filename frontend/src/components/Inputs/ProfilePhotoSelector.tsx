@@ -87,7 +87,7 @@ const ProfilePhotoSelectorInner = ({
   };
 
   return (
-    <div className="flex justify-center mb-6">
+    <div className="flex justify-center mb-4 sm:mb-6">
       <input
         type="file"
         accept="image/*"
@@ -103,23 +103,24 @@ const ProfilePhotoSelectorInner = ({
 
       {!value ? (
         <div
-          className={`w-20 h-20 flex items-center justify-center bg-orange-50 rounded-full relative ${
+          className={`w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-orange-50 rounded-full relative ${
             disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
           }`}
           onClick={onChooseFile}
         >
-          <LuUser className="text-4xl text-orange-500" />
+          <LuUser className="text-3xl sm:text-4xl text-orange-500" />
 
           <button
             type="button"
             disabled={disabled}
-            className="w-8 h-8 flex items-center justify-center bg-linear-to-r from-orange-500/85 to-orange-600 text-white rounded-full absolute -bottom-1 -right-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-linear-to-r from-orange-500/85 to-orange-600 text-white rounded-full absolute -bottom-1 -right-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed min-h-[28px] sm:min-h-[32px]"
             onClick={(e) => {
               e.stopPropagation();
               onChooseFile(e);
             }}
+            aria-label="Upload photo"
           >
-            <LuUpload />
+            <LuUpload size={14} className="sm:w-4 sm:h-4" />
           </button>
         </div>
       ) : (
@@ -127,15 +128,16 @@ const ProfilePhotoSelectorInner = ({
           <img
             src={previewUrl ?? undefined}
             alt="profile photo"
-            className="w-20 h-20 rounded-full object-cover"
+            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover"
           />
           <button
             type="button"
             disabled={disabled}
-            className="w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full absolute -bottom-1 -right-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-red-500 text-white rounded-full absolute -bottom-1 -right-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed min-h-[28px] sm:min-h-[32px]"
             onClick={handleRemoveImage}
+            aria-label="Remove photo"
           >
-            <LuTrash />
+            <LuTrash size={14} className="sm:w-4 sm:h-4" />
           </button>
         </div>
       )}
