@@ -14,7 +14,7 @@ const app: Application = express();
 // Middleware to handle CORS
 const allowedOrigins = [
   process.env.CLIENT_URL,
-  "https://finance-tracker-frontend-kappa.vercel.app",
+  "https://interview-prep-ai-three-jade.vercel.app/",
 ].filter(Boolean) as string[];
 
 const corsOptions: cors.CorsOptions = {

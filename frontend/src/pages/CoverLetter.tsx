@@ -171,7 +171,7 @@ const CoverLetter = () => {
               <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
                 {/* Match Analysis Section */}
                 {matchPercentage !== null && (
-                  <div className="mb-4 sm:mb-6 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg border border-orange-100">
+                  <div className="mb-4 sm:mb-6 p-4 bg-linear-to-r from-orange-50 to-amber-50 rounded-lg border border-orange-100">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-3">
                       <h3 className="text-sm sm:text-base font-semibold text-black">
                         Job Match Analysis
