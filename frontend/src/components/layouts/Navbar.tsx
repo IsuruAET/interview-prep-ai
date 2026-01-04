@@ -12,19 +12,43 @@ const Navbar = () => {
             </h2>
           </Link>
           <Link
+            to="/interview-questions"
+            className="text-xs sm:text-sm font-medium text-slate-700 hover:text-orange-600 transition-colors whitespace-nowrap hidden sm:block"
+          >
+            Interview Questions
+          </Link>
+          <Link
             to="/cover-letter"
             className="text-xs sm:text-sm font-medium text-slate-700 hover:text-orange-600 transition-colors whitespace-nowrap hidden sm:block"
           >
             Cover Letter
           </Link>
+          <Link
+            to="/about-me"
+            className="text-xs sm:text-sm font-medium text-slate-700 hover:text-orange-600 transition-colors whitespace-nowrap hidden sm:block"
+          >
+            About Me
+          </Link>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <Link
+            to="/interview-questions"
+            className="text-xs sm:text-sm font-medium text-slate-700 hover:text-orange-600 transition-colors sm:hidden"
+          >
+            Questions
+          </Link>
           <Link
             to="/cover-letter"
             className="text-xs sm:text-sm font-medium text-slate-700 hover:text-orange-600 transition-colors sm:hidden"
           >
             Cover Letter
+          </Link>
+          <Link
+            to="/about-me"
+            className="text-xs sm:text-sm font-medium text-slate-700 hover:text-orange-600 transition-colors sm:hidden"
+          >
+            About
           </Link>
           <ProfileInfoCard />
         </div>

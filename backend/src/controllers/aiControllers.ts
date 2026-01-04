@@ -5,6 +5,7 @@ import {
   generateConceptExplanationPrompt,
   generateInterviewQuestionsPrompt,
   generateCoverLetterPrompt,
+  generateMatchAnalysisPrompt,
 } from "../utils/prompts";
 
 // Initialize Groq client
@@ -186,6 +187,42 @@ export const generateCoverLetter = async (
       });
     }
 
+    // Generate match analysis
+    const matchPrompt = generateMatchAnalysisPrompt(
+      user.profileDescription,
+      companyDescription
+    );
+
+    const matchResponse = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        {
+          role: "user",
+          content: matchPrompt,
+        },
+      ],
+      temperature: 0.7,
+      response_format: { type: "json_object" },
+    });
+
+    const matchRawText = matchResponse.choices[0]?.message?.content || "";
+    const matchCleanedText = matchRawText
+      .replace(/^```json\s*/, "")
+      .replace(/```$/, "")
+      .trim();
+
+    let matchAnalysis = { matchPercentage: 0, matchSummary: "" };
+    try {
+      const matchParsed = JSON.parse(matchCleanedText);
+      matchAnalysis = {
+        matchPercentage: matchParsed.matchPercentage || 0,
+        matchSummary: matchParsed.matchSummary || "",
+      };
+    } catch {
+      // If match analysis fails, continue with default values
+    }
+
+    // Generate cover letter
     const prompt = generateCoverLetterPrompt(
       user.profileDescription,
       companyDescription
@@ -216,7 +253,11 @@ export const generateCoverLetter = async (
     // Extract coverLetter if it exists, otherwise return the data as-is
     const data = parsedData.coverLetter || parsedData;
 
-    return res.status(200).json({ coverLetter: data });
+    return res.status(200).json({
+      coverLetter: data,
+      matchPercentage: matchAnalysis.matchPercentage,
+      matchSummary: matchAnalysis.matchSummary,
+    });
   } catch (error: unknown) {
     if (error instanceof Error) {
       return res.status(500).json({

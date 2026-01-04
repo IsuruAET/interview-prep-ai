@@ -1,0 +1,177 @@
+[
+  {
+    "id": "javascript-1",
+    "topic": "javascript",
+    "title": "Explain Closures in JavaScript with Examples",
+    "answer": "A closure is a function that has access to variables in its outer (enclosing) lexical scope, even after the outer function has returned.\r\n\r\n```javascript\r\nfunction outerFunction(x) {\r\n  // Outer function's variable\r\n  const outerVariable = x;\r\n  \r\n  // Inner function (closure)\r\n  function innerFunction(y) {\r\n    console.log(outerVariable + y); // Accesses outerVariable\r\n  }\r\n  \r\n  return innerFunction;\r\n}\r\n\r\nconst closure = outerFunction(10);\r\nclosure(5); // Output: 15\r\n\r\n// Real-world example: Module pattern\r\nconst counter = (function() {\r\n  let count = 0;\r\n  return {\r\n    increment: () => ++count,\r\n    decrement: () => --count,\r\n    getCount: () => count\r\n  };\r\n})();\r\n\r\ncounter.increment(); // 1\r\ncounter.increment(); // 2\r\nconsole.log(counter.getCount()); // 2\r\n```",
+    "number": 1
+  },
+  {
+    "id": "javascript-2",
+    "topic": "javascript",
+    "title": "What is the Event Loop and How Does It Work?",
+    "answer": "The event loop is JavaScript's mechanism for handling asynchronous operations. It continuously checks the call stack and task queues.\r\n\r\n```javascript\r\nconsole.log('1');\r\n\r\nsetTimeout(() => console.log('2'), 0);\r\n\r\nPromise.resolve().then(() => console.log('3'));\r\n\r\nconsole.log('4');\r\n\r\n// Output: 1, 4, 3, 2\r\n// Explanation:\r\n// 1. '1' and '4' are synchronous\r\n// 2. Promise microtask runs before setTimeout (macrotask)\r\n// 3. setTimeout callback runs last\r\n\r\n// Event loop phases:\r\n// 1. Call stack (synchronous code)\r\n// 2. Microtask queue (Promises, queueMicrotask)\r\n// 3. Macrotask queue (setTimeout, setInterval, I/O)\r\n```",
+    "number": 2
+  },
+  {
+    "id": "javascript-3",
+    "topic": "javascript",
+    "title": "Explain `this` Binding in JavaScript",
+    "answer": "`this` refers to the execution context. Its value depends on how a function is called.\r\n\r\n```javascript\r\n// Global context\r\nconsole.log(this); // Window (browser) or global (Node)\r\n\r\n// Object method\r\nconst obj = {\r\n  name: 'John',\r\n  greet: function() {\r\n    return `Hello, ${this.name}`;\r\n  }\r\n};\r\nobj.greet(); // \"Hello, John\"\r\n\r\n// Arrow functions (lexical this)\r\nconst obj2 = {\r\n  name: 'Jane',\r\n  greet: () => {\r\n    return `Hello, ${this.name}`; // this refers to global\r\n  },\r\n  greetRegular: function() {\r\n    const arrow = () => {\r\n      return `Hello, ${this.name}`; // this refers to obj2\r\n    };\r\n    return arrow();\r\n  }\r\n};\r\n\r\n// Explicit binding\r\nfunction greet() {\r\n  return `Hello, ${this.name}`;\r\n}\r\nconst person = { name: 'Alice' };\r\ngreet.call(person); // \"Hello, Alice\"\r\ngreet.apply(person); // \"Hello, Alice\"\r\nconst boundGreet = greet.bind(person);\r\nboundGreet(); // \"Hello, Alice\"\r\n\r\n// Constructor\r\nfunction Person(name) {\r\n  this.name = name;\r\n}\r\nconst p = new Person('Bob');\r\nconsole.log(p.name); // \"Bob\"\r\n```",
+    "number": 3
+  },
+  {
+    "id": "javascript-4",
+    "topic": "javascript",
+    "title": "What is Hoisting? Explain with Examples",
+    "answer": "Hoisting moves variable and function declarations to the top of their scope before code execution.\r\n\r\n```javascript\r\n// Variable hoisting (var)\r\nconsole.log(x); // undefined (not ReferenceError)\r\nvar x = 5;\r\n\r\n// Equivalent to:\r\nvar x;\r\nconsole.log(x);\r\nx = 5;\r\n\r\n// Function hoisting\r\nsayHello(); // \"Hello\" (works!)\r\n\r\nfunction sayHello() {\r\n  console.log('Hello');\r\n}\r\n\r\n// let/const hoisting (Temporal Dead Zone)\r\nconsole.log(y); // ReferenceError: Cannot access 'y' before initialization\r\nlet y = 10;\r\n\r\n// Function expression (not hoisted)\r\nsayHi(); // TypeError: sayHi is not a function\r\nvar sayHi = function() {\r\n  console.log('Hi');\r\n};\r\n```",
+    "number": 4
+  },
+  {
+    "id": "javascript-5",
+    "topic": "javascript",
+    "title": "Explain Prototypes and Prototypal Inheritance",
+    "answer": "JavaScript uses prototypal inheritance where objects inherit properties from their prototype chain.\r\n\r\n```javascript\r\n// Constructor function\r\nfunction Animal(name) {\r\n  this.name = name;\r\n}\r\n\r\nAnimal.prototype.speak = function() {\r\n  return `${this.name} makes a sound`;\r\n};\r\n\r\nfunction Dog(name, breed) {\r\n  Animal.call(this, name);\r\n  this.breed = breed;\r\n}\r\n\r\n// Set up inheritance\r\nDog.prototype = Object.create(Animal.prototype);\r\nDog.prototype.constructor = Dog;\r\n\r\nDog.prototype.speak = function() {\r\n  return `${this.name} barks`;\r\n};\r\n\r\nconst dog = new Dog('Max', 'Labrador');\r\nconsole.log(dog.speak()); // \"Max barks\"\r\nconsole.log(dog instanceof Dog); // true\r\nconsole.log(dog instanceof Animal); // true\r\n\r\n// ES6 Classes (syntactic sugar)\r\nclass Animal {\r\n  constructor(name) {\r\n    this.name = name;\r\n  }\r\n  speak() {\r\n    return `${this.name} makes a sound`;\r\n  }\r\n}\r\n\r\nclass Dog extends Animal {\r\n  constructor(name, breed) {\r\n    super(name);\r\n    this.breed = breed;\r\n  }\r\n  speak() {\r\n    return `${this.name} barks`;\r\n  }\r\n}\r\n```",
+    "number": 5
+  },
+  {
+    "id": "javascript-6",
+    "topic": "javascript",
+    "title": "What are Promises and How Do They Work?",
+    "answer": "Promises represent the eventual completion (or failure) of an asynchronous operation.\r\n\r\n```javascript\r\n// Creating a Promise\r\nconst promise = new Promise((resolve, reject) => {\r\n  const success = true;\r\n  if (success) {\r\n    resolve('Operation succeeded');\r\n  } else {\r\n    reject('Operation failed');\r\n  }\r\n});\r\n\r\n// Consuming a Promise\r\npromise\r\n  .then(result => console.log(result))\r\n  .catch(error => console.error(error))\r\n  .finally(() => console.log('Done'));\r\n\r\n// Promise.all - wait for all\r\nconst p1 = Promise.resolve(1);\r\nconst p2 = Promise.resolve(2);\r\nconst p3 = Promise.resolve(3);\r\n\r\nPromise.all([p1, p2, p3])\r\n  .then(values => console.log(values)); // [1, 2, 3]\r\n\r\n// Promise.allSettled - wait for all (even if rejected)\r\nPromise.allSettled([p1, Promise.reject('error'), p3])\r\n  .then(results => console.log(results));\r\n\r\n// Promise.race - first to settle\r\nPromise.race([p1, p2])\r\n  .then(value => console.log(value)); // 1\r\n\r\n// Async/await\r\nasync function fetchData() {\r\n  try {\r\n    const response = await fetch('/api/data');\r\n    const data = await response.json();\r\n    return data;\r\n  } catch (error) {\r\n    console.error('Error:', error);\r\n  }\r\n}\r\n```",
+    "number": 6
+  },
+  {
+    "id": "javascript-7",
+    "topic": "javascript",
+    "title": "Explain Call, Apply, and Bind",
+    "answer": "These methods allow you to set the `this` context explicitly.\r\n\r\n```javascript\r\nconst person = {\r\n  firstName: 'John',\r\n  lastName: 'Doe'\r\n};\r\n\r\nfunction greet(greeting, punctuation) {\r\n  return `${greeting}, ${this.firstName} ${this.lastName}${punctuation}`;\r\n}\r\n\r\n// call - arguments passed individually\r\ngreet.call(person, 'Hello', '!'); // \"Hello, John Doe!\"\r\n\r\n// apply - arguments passed as array\r\ngreet.apply(person, ['Hi', '.']); // \"Hi, John Doe.\"\r\n\r\n// bind - returns new function with bound this\r\nconst boundGreet = greet.bind(person);\r\nboundGreet('Hey', '?'); // \"Hey, John Doe?\"\r\n\r\n// Practical example: Borrowing methods\r\nconst numbers = [1, 2, 3, 4, 5];\r\nconst max = Math.max.apply(null, numbers); // 5\r\nconst maxES6 = Math.max(...numbers); // 5 (modern way)\r\n```",
+    "number": 7
+  },
+  {
+    "id": "javascript-8",
+    "topic": "javascript",
+    "title": "What is the Difference Between `==` and `===`?",
+    "answer": "`==` performs type coercion, `===` checks both value and type.\r\n\r\n```javascript\r\n// == (loose equality with coercion)\r\n5 == '5';        // true (string converted to number)\r\n0 == false;      // true (false converted to 0)\r\n'' == false;     // true (both converted to 0)\r\nnull == undefined; // true (special case)\r\n\r\n// === (strict equality, no coercion)\r\n5 === '5';       // false (different types)\r\n0 === false;     // false (different types)\r\n'' === false;    // false (different types)\r\nnull === undefined; // false (different types)\r\n\r\n// Best practice: Always use ===\r\n// Object comparison\r\nconst obj1 = { a: 1 };\r\nconst obj2 = { a: 1 };\r\nobj1 === obj2;   // false (different references)\r\nobj1 === obj1;   // true (same reference)\r\n```",
+    "number": 8
+  },
+  {
+    "id": "javascript-9",
+    "topic": "javascript",
+    "title": "Explain Debouncing and Throttling",
+    "answer": "Debouncing delays execution until after a pause, throttling limits execution frequency.\r\n\r\n```javascript\r\n// Debounce - execute after delay when user stops\r\nfunction debounce(func, delay) {\r\n  let timeoutId;\r\n  return function(...args) {\r\n    clearTimeout(timeoutId);\r\n    timeoutId = setTimeout(() => func.apply(this, args), delay);\r\n  };\r\n}\r\n\r\n// Example: Search input\r\nconst searchInput = document.getElementById('search');\r\nconst debouncedSearch = debounce((query) => {\r\n  console.log('Searching for:', query);\r\n}, 300);\r\n\r\nsearchInput.addEventListener('input', (e) => {\r\n  debouncedSearch(e.target.value);\r\n});\r\n\r\n// Throttle - execute at most once per interval\r\nfunction throttle(func, limit) {\r\n  let inThrottle;\r\n  return function(...args) {\r\n    if (!inThrottle) {\r\n      func.apply(this, args);\r\n      inThrottle = true;\r\n      setTimeout(() => inThrottle = false, limit);\r\n    }\r\n  };\r\n}\r\n\r\n// Example: Scroll handler\r\nconst throttledScroll = throttle(() => {\r\n  console.log('Scroll event');\r\n}, 100);\r\n\r\nwindow.addEventListener('scroll', throttledScroll);\r\n```",
+    "number": 9
+  },
+  {
+    "id": "javascript-10",
+    "topic": "javascript",
+    "title": "What are Generators and How Do They Work?",
+    "answer": "Generators are functions that can be paused and resumed, yielding multiple values.\r\n\r\n```javascript\r\n// Generator function\r\nfunction* numberGenerator() {\r\n  yield 1;\r\n  yield 2;\r\n  yield 3;\r\n}\r\n\r\nconst gen = numberGenerator();\r\nconsole.log(gen.next()); // { value: 1, done: false }\r\nconsole.log(gen.next()); // { value: 2, done: false }\r\nconsole.log(gen.next()); // { value: 3, done: false }\r\nconsole.log(gen.next()); // { value: undefined, done: true }\r\n\r\n// Infinite generator\r\nfunction* infiniteCounter() {\r\n  let i = 0;\r\n  while (true) {\r\n    yield i++;\r\n  }\r\n}\r\n\r\nconst counter = infiniteCounter();\r\nconsole.log(counter.next().value); // 0\r\nconsole.log(counter.next().value); // 1\r\n\r\n// Generator with parameters\r\nfunction* fibonacci() {\r\n  let [prev, curr] = [0, 1];\r\n  while (true) {\r\n    [prev, curr] = [curr, prev + curr];\r\n    yield curr;\r\n  }\r\n}\r\n\r\nconst fib = fibonacci();\r\nconsole.log(fib.next().value); // 1\r\nconsole.log(fib.next().value); // 2\r\nconsole.log(fib.next().value); // 3\r\n```",
+    "number": 10
+  },
+  {
+    "id": "javascript-11",
+    "topic": "javascript",
+    "title": "Explain the Spread Operator and Rest Parameters",
+    "answer": "Spread expands iterables, rest collects remaining arguments.\r\n\r\n```javascript\r\n// Spread operator (...)\r\nconst arr1 = [1, 2, 3];\r\nconst arr2 = [4, 5, 6];\r\nconst combined = [...arr1, ...arr2]; // [1, 2, 3, 4, 5, 6]\r\n\r\n// Copying arrays\r\nconst original = [1, 2, 3];\r\nconst copy = [...original]; // Shallow copy\r\n\r\n// Spreading objects\r\nconst obj1 = { a: 1, b: 2 };\r\nconst obj2 = { c: 3, ...obj1 }; // { c: 3, a: 1, b: 2 }\r\nconst obj3 = { ...obj1, b: 4 }; // { a: 1, b: 4 } (overwrites)\r\n\r\n// Function arguments\r\nMath.max(...[1, 5, 3, 2]); // 5\r\n\r\n// Rest parameters\r\nfunction sum(...numbers) {\r\n  return numbers.reduce((acc, num) => acc + num, 0);\r\n}\r\nsum(1, 2, 3, 4); // 10\r\n\r\n// Destructuring with rest\r\nconst [first, second, ...rest] = [1, 2, 3, 4, 5];\r\n// first = 1, second = 2, rest = [3, 4, 5]\r\n\r\nconst { a, ...others } = { a: 1, b: 2, c: 3 };\r\n// a = 1, others = { b: 2, c: 3 }\r\n```",
+    "number": 11
+  },
+  {
+    "id": "javascript-12",
+    "topic": "javascript",
+    "title": "What is Currying? Provide Examples",
+    "answer": "Currying transforms a function with multiple arguments into a sequence of functions with single arguments.\r\n\r\n```javascript\r\n// Regular function\r\nfunction add(a, b, c) {\r\n  return a + b + c;\r\n}\r\n\r\n// Curried version\r\nfunction curriedAdd(a) {\r\n  return function(b) {\r\n    return function(c) {\r\n      return a + b + c;\r\n    };\r\n  };\r\n}\r\n\r\n// Arrow function version\r\nconst curriedAddArrow = a => b => c => a + b + c;\r\n\r\ncurriedAdd(1)(2)(3); // 6\r\ncurriedAddArrow(1)(2)(3); // 6\r\n\r\n// Generic curry function\r\nfunction curry(fn) {\r\n  return function curried(...args) {\r\n    if (args.length >= fn.length) {\r\n      return fn.apply(this, args);\r\n    }\r\n    return function(...nextArgs) {\r\n      return curried.apply(this, args.concat(nextArgs));\r\n    };\r\n  };\r\n}\r\n\r\nconst curriedMultiply = curry((a, b, c) => a * b * c);\r\ncurriedMultiply(2)(3)(4); // 24\r\ncurriedMultiply(2, 3)(4); // 24\r\ncurriedMultiply(2, 3, 4); // 24\r\n\r\n// Practical example: Partial application\r\nconst multiplyBy2 = curriedMultiply(2);\r\nconst multiplyBy2And3 = multiplyBy2(3);\r\nmultiplyBy2And3(4); // 24\r\n```",
+    "number": 12
+  },
+  {
+    "id": "javascript-13",
+    "topic": "javascript",
+    "title": "Explain Memory Leaks in JavaScript",
+    "answer": "Memory leaks occur when memory is allocated but never released.\r\n\r\n```javascript\r\n// 1. Global variables\r\nfunction leak() {\r\n  globalVar = 'This creates a global variable'; // Missing var/let/const\r\n}\r\n\r\n// 2. Closures holding references\r\nfunction outer() {\r\n  const largeData = new Array(1000000).fill('data');\r\n  return function inner() {\r\n    // inner holds reference to largeData even if unused\r\n    return 'inner';\r\n  };\r\n}\r\n\r\n// 3. Event listeners not removed\r\nconst button = document.getElementById('button');\r\nbutton.addEventListener('click', handleClick);\r\n// If button is removed, listener still holds reference\r\n\r\n// Fix: Remove listeners\r\nbutton.removeEventListener('click', handleClick);\r\n\r\n// 4. Timers not cleared\r\nconst intervalId = setInterval(() => {\r\n  // Some code\r\n}, 1000);\r\n// Fix:\r\nclearInterval(intervalId);\r\n\r\n// 5. DOM references\r\nconst elements = [];\r\nfunction addElement() {\r\n  const div = document.createElement('div');\r\n  elements.push(div); // Holds reference even if removed from DOM\r\n}\r\n\r\n// Fix: Clear references\r\nelements.length = 0;\r\n```",
+    "number": 13
+  },
+  {
+    "id": "javascript-14",
+    "topic": "javascript",
+    "title": "What is the Difference Between `var`, `let`, and `const`?",
+    "answer": "Different scoping and hoisting behaviors.\r\n\r\n```javascript\r\n// var - function scoped, hoisted, can be redeclared\r\nfunction example() {\r\n  if (true) {\r\n    var x = 1;\r\n  }\r\n  console.log(x); // 1 (accessible outside block)\r\n}\r\n\r\n// let - block scoped, hoisted but in TDZ, cannot be redeclared\r\nfunction example2() {\r\n  if (true) {\r\n    let y = 2;\r\n  }\r\n  console.log(y); // ReferenceError: y is not defined\r\n}\r\n\r\n// const - block scoped, must be initialized, cannot be reassigned\r\nconst z = 3;\r\nz = 4; // TypeError: Assignment to constant variable\r\n\r\n// const with objects (reference is constant, properties can change)\r\nconst obj = { a: 1 };\r\nobj.a = 2; // OK\r\nobj = {}; // TypeError\r\n\r\n// Loop behavior\r\nfor (var i = 0; i < 3; i++) {\r\n  setTimeout(() => console.log(i), 100); // 3, 3, 3\r\n}\r\n\r\nfor (let j = 0; j < 3; j++) {\r\n  setTimeout(() => console.log(j), 100); // 0, 1, 2\r\n}\r\n```",
+    "number": 14
+  },
+  {
+    "id": "javascript-15",
+    "topic": "javascript",
+    "title": "Explain Async/Await and Error Handling",
+    "answer": "Async/await provides synchronous-looking syntax for asynchronous code.\r\n\r\n```javascript\r\n// Basic async/await\r\nasync function fetchUser(id) {\r\n  const response = await fetch(`/api/users/${id}`);\r\n  const user = await response.json();\r\n  return user;\r\n}\r\n\r\n// Error handling with try/catch\r\nasync function fetchUserSafe(id) {\r\n  try {\r\n    const response = await fetch(`/api/users/${id}`);\r\n    if (!response.ok) {\r\n      throw new Error('Failed to fetch');\r\n    }\r\n    const user = await response.json();\r\n    return user;\r\n  } catch (error) {\r\n    console.error('Error:', error);\r\n    return null;\r\n  }\r\n}\r\n\r\n// Multiple async operations\r\nasync function fetchMultiple() {\r\n  try {\r\n    const [user, posts, comments] = await Promise.all([\r\n      fetch('/api/user').then(r => r.json()),\r\n      fetch('/api/posts').then(r => r.json()),\r\n      fetch('/api/comments').then(r => r.json())\r\n    ]);\r\n    return { user, posts, comments };\r\n  } catch (error) {\r\n    console.error('One or more requests failed:', error);\r\n  }\r\n}\r\n\r\n// Sequential vs parallel\r\nasync function sequential() {\r\n  const user = await fetchUser(1); // Wait\r\n  const posts = await fetchPosts(user.id); // Wait\r\n  // Total: time1 + time2\r\n}\r\n\r\nasync function parallel() {\r\n  const [user, allPosts] = await Promise.all([\r\n    fetchUser(1),\r\n    fetchPosts()\r\n  ]);\r\n  // Total: max(time1, time2)\r\n}\r\n```",
+    "number": 15
+  },
+  {
+    "id": "javascript-16",
+    "topic": "javascript",
+    "title": "What are WeakMap and WeakSet?",
+    "answer": "WeakMap and WeakSet hold weak references, allowing garbage collection of keys.\r\n\r\n```javascript\r\n// WeakMap - keys must be objects, no iteration, weak references\r\nconst weakMap = new WeakMap();\r\nconst obj = { id: 1 };\r\nweakMap.set(obj, 'value');\r\nconsole.log(weakMap.get(obj)); // 'value'\r\n\r\n// When obj is garbage collected, entry is removed\r\nobj = null; // Entry can be garbage collected\r\n\r\n// WeakSet - only objects, no iteration, weak references\r\nconst weakSet = new WeakSet();\r\nconst obj1 = { id: 1 };\r\nconst obj2 = { id: 2 };\r\n\r\nweakSet.add(obj1);\r\nweakSet.add(obj2);\r\nconsole.log(weakSet.has(obj1)); // true\r\n\r\n// Use cases: Private data, DOM node metadata\r\nconst privateData = new WeakMap();\r\n\r\nclass User {\r\n  constructor(name) {\r\n    privateData.set(this, { name });\r\n  }\r\n  getName() {\r\n    return privateData.get(this).name;\r\n  }\r\n}\r\n\r\nconst user = new User('John');\r\nconsole.log(user.getName()); // 'John'\r\n// No way to access privateData directly\r\n```",
+    "number": 16
+  },
+  {
+    "id": "javascript-17",
+    "topic": "javascript",
+    "title": "Explain the Module Pattern",
+    "answer": "The module pattern encapsulates code and provides public/private interfaces.\r\n\r\n```javascript\r\n// IIFE Module Pattern\r\nconst Calculator = (function() {\r\n  // Private variables\r\n  let result = 0;\r\n  \r\n  // Private functions\r\n  function validate(num) {\r\n    return typeof num === 'number' && !isNaN(num);\r\n  }\r\n  \r\n  // Public API\r\n  return {\r\n    add: function(num) {\r\n      if (validate(num)) result += num;\r\n      return this;\r\n    },\r\n    subtract: function(num) {\r\n      if (validate(num)) result -= num;\r\n      return this;\r\n    },\r\n    getResult: function() {\r\n      return result;\r\n    },\r\n    reset: function() {\r\n      result = 0;\r\n      return this;\r\n    }\r\n  };\r\n})();\r\n\r\nCalculator.add(5).subtract(2).getResult(); // 3\r\n\r\n// ES6 Modules\r\n// math.js\r\nexport const PI = 3.14159;\r\nexport function add(a, b) {\r\n  return a + b;\r\n}\r\nexport default function multiply(a, b) {\r\n  return a * b;\r\n}\r\n\r\n// main.js\r\nimport multiply, { PI, add } from './math.js';\r\n// or\r\nimport * as math from './math.js';\r\n```",
+    "number": 17
+  },
+  {
+    "id": "javascript-18",
+    "topic": "javascript",
+    "title": "What is the Difference Between `null` and `undefined`?",
+    "answer": "`undefined` means a variable hasn't been assigned, `null` is an intentional absence of value.\r\n\r\n```javascript\r\n// undefined\r\nlet x;\r\nconsole.log(x); // undefined\r\n\r\nfunction test(param) {\r\n  console.log(param); // undefined if not passed\r\n}\r\ntest();\r\n\r\n// null - explicitly set\r\nlet y = null;\r\nconsole.log(y); // null\r\n\r\n// Type checking\r\ntypeof undefined; // \"undefined\"\r\ntypeof null; // \"object\" (historical bug)\r\n\r\n// Equality\r\nnull == undefined; // true (loose equality)\r\nnull === undefined; // false (strict equality)\r\n\r\n// Practical usage\r\nfunction getUser(id) {\r\n  if (id) {\r\n    return { id, name: 'John' };\r\n  }\r\n  return null; // Explicitly no user\r\n}\r\n\r\nconst user = getUser(123);\r\nif (user === null) {\r\n  console.log('No user found');\r\n}\r\n```",
+    "number": 18
+  },
+  {
+    "id": "javascript-19",
+    "topic": "javascript",
+    "title": "Explain Function Composition",
+    "answer": "Function composition combines functions to create new functions.\r\n\r\n```javascript\r\n// Simple composition\r\nconst add = x => x + 1;\r\nconst multiply = x => x * 2;\r\nconst subtract = x => x - 3;\r\n\r\n// Manual composition\r\nconst result = subtract(multiply(add(5))); // ((5 + 1) * 2) - 3 = 9\r\n\r\n// Generic compose (right to left)\r\nfunction compose(...fns) {\r\n  return function(value) {\r\n    return fns.reduceRight((acc, fn) => fn(acc), value);\r\n  };\r\n}\r\n\r\nconst composed = compose(subtract, multiply, add);\r\ncomposed(5); // 9\r\n\r\n// Generic pipe (left to right, more readable)\r\nfunction pipe(...fns) {\r\n  return function(value) {\r\n    return fns.reduce((acc, fn) => fn(acc), value);\r\n  };\r\n}\r\n\r\nconst piped = pipe(add, multiply, subtract);\r\npiped(5); // 9\r\n\r\n// Arrow function versions\r\nconst compose = (...fns) => value => fns.reduceRight((acc, fn) => fn(acc), value);\r\nconst pipe = (...fns) => value => fns.reduce((acc, fn) => fn(acc), value);\r\n\r\n// Practical example\r\nconst users = [\r\n  { name: 'John', age: 25 },\r\n  { name: 'Jane', age: 30 },\r\n  { name: 'Bob', age: 20 }\r\n];\r\n\r\nconst getAdults = users => users.filter(u => u.age >= 18);\r\nconst getNames = users => users.map(u => u.name);\r\nconst sortNames = names => names.sort();\r\n\r\nconst getAdultNames = pipe(getAdults, getNames, sortNames);\r\nconsole.log(getAdultNames(users)); // ['Bob', 'Jane', 'John']\r\n```",
+    "number": 19
+  },
+  {
+    "id": "javascript-20",
+    "topic": "javascript",
+    "title": "What are Proxy and Reflect?",
+    "answer": "Proxy intercepts operations on objects, Reflect provides methods for these operations.\r\n\r\n```javascript\r\n// Proxy - intercept object operations\r\nconst target = {\r\n  name: 'John',\r\n  age: 30\r\n};\r\n\r\nconst handler = {\r\n  get(target, prop) {\r\n    if (prop === 'age') {\r\n      return `Age is ${target[prop]}`;\r\n    }\r\n    return target[prop];\r\n  },\r\n  set(target, prop, value) {\r\n    if (prop === 'age' && value < 0) {\r\n      throw new Error('Age cannot be negative');\r\n    }\r\n    target[prop] = value;\r\n    return true;\r\n  },\r\n  has(target, prop) {\r\n    return prop in target;\r\n  }\r\n};\r\n\r\nconst proxy = new Proxy(target, handler);\r\nconsole.log(proxy.name); // 'John'\r\nconsole.log(proxy.age); // 'Age is 30'\r\nproxy.age = 25; // OK\r\nproxy.age = -5; // Error\r\n\r\n// Reflect - provides methods for proxy operations\r\nconst obj = { a: 1 };\r\nReflect.get(obj, 'a'); // 1\r\nReflect.set(obj, 'b', 2); // true\r\nReflect.has(obj, 'a'); // true\r\nReflect.deleteProperty(obj, 'a'); // true\r\n\r\n// Practical: Validation proxy\r\nfunction createValidator(target) {\r\n  return new Proxy(target, {\r\n    set(target, prop, value) {\r\n      if (prop === 'email' && !value.includes('@')) {\r\n        throw new Error('Invalid email');\r\n      }\r\n      return Reflect.set(target, prop, value);\r\n    }\r\n  });\r\n}\r\n\r\nconst user = createValidator({});\r\nuser.email = 'test@example.com'; // OK\r\nuser.email = 'invalid'; // Error\r\n```",
+    "number": 20
+  },
+  {
+    "id": "javascript-21",
+    "topic": "javascript",
+    "title": "Explain the Difference Between `forEach`, `map`, `filter`, and `reduce`",
+    "answer": "Different array methods for iteration and transformation.\r\n\r\n```javascript\r\nconst numbers = [1, 2, 3, 4, 5];\r\n\r\n// forEach - executes function for each element, returns undefined\r\nnumbers.forEach(num => console.log(num * 2));\r\n// No return value, used for side effects\r\n\r\n// map - transforms each element, returns new array\r\nconst doubled = numbers.map(num => num * 2);\r\n// [2, 4, 6, 8, 10]\r\n\r\n// filter - selects elements, returns new array\r\nconst evens = numbers.filter(num => num % 2 === 0);\r\n// [2, 4]\r\n\r\n// reduce - reduces array to single value\r\nconst sum = numbers.reduce((acc, num) => acc + num, 0);\r\n// 15\r\n\r\n// Chaining\r\nconst result = numbers\r\n  .filter(n => n % 2 === 0) // [2, 4]\r\n  .map(n => n * 2) // [4, 8]\r\n  .reduce((acc, n) => acc + n, 0); // 12\r\n\r\n// Practical example\r\nconst users = [\r\n  { name: 'John', age: 25, active: true },\r\n  { name: 'Jane', age: 30, active: false },\r\n  { name: 'Bob', age: 20, active: true }\r\n];\r\n\r\nconst activeUserNames = users\r\n  .filter(user => user.active)\r\n  .map(user => user.name);\r\n// ['John', 'Bob']\r\n\r\nconst totalAge = users.reduce((sum, user) => sum + user.age, 0);\r\n// 75\r\n```",
+    "number": 21
+  },
+  {
+    "id": "javascript-22",
+    "topic": "javascript",
+    "title": "What is the Temporal Dead Zone (TDZ)?",
+    "answer": "The TDZ is the period between entering scope and initialization where variables cannot be accessed.\r\n\r\n```javascript\r\n// Temporal Dead Zone for let/const\r\nconsole.log(x); // ReferenceError: Cannot access 'x' before initialization\r\nlet x = 5;\r\n\r\n// TDZ exists from start of block until initialization\r\n{\r\n  // TDZ starts here\r\n  console.log(y); // ReferenceError\r\n  let y = 10; // TDZ ends here\r\n}\r\n\r\n// Function in TDZ\r\n{\r\n  console.log(typeof func); // ReferenceError (not 'undefined')\r\n  let func = function() {};\r\n}\r\n\r\n// var doesn't have TDZ (but has hoisting issues)\r\nconsole.log(z); // undefined (not ReferenceError)\r\nvar z = 5;\r\n\r\n// Practical impact\r\nfunction example() {\r\n  console.log(typeof value); // ReferenceError\r\n  let value = 'test';\r\n}\r\n```",
+    "number": 22
+  },
+  {
+    "id": "javascript-23",
+    "topic": "javascript",
+    "title": "Explain Memoization",
+    "answer": "Memoization caches function results to avoid redundant calculations.\r\n\r\n```javascript\r\n// Simple memoization\r\nfunction memoize(fn) {\r\n  const cache = new Map();\r\n  return function(...args) {\r\n    const key = JSON.stringify(args);\r\n    if (cache.has(key)) {\r\n      return cache.get(key);\r\n    }\r\n    const result = fn.apply(this, args);\r\n    cache.set(key, result);\r\n    return result;\r\n  };\r\n}\r\n\r\n// Fibonacci without memoization (slow)\r\nfunction fibonacci(n) {\r\n  if (n <= 1) return n;\r\n  return fibonacci(n - 1) + fibonacci(n - 2);\r\n}\r\n\r\n// Fibonacci with memoization (fast)\r\nconst memoizedFibonacci = memoize(function(n) {\r\n  if (n <= 1) return n;\r\n  return memoizedFibonacci(n - 1) + memoizedFibonacci(n - 2);\r\n});\r\n\r\n// Manual memoization\r\nconst factorialCache = new Map();\r\nfunction factorial(n) {\r\n  if (n <= 1) return 1;\r\n  if (factorialCache.has(n)) {\r\n    return factorialCache.get(n);\r\n  }\r\n  const result = n * factorial(n - 1);\r\n  factorialCache.set(n, result);\r\n  return result;\r\n}\r\n\r\n// React useMemo equivalent\r\nfunction useMemo(fn, deps) {\r\n  const cache = new Map();\r\n  return function(...args) {\r\n    const key = JSON.stringify(deps);\r\n    if (cache.has(key)) {\r\n      return cache.get(key);\r\n    }\r\n    const result = fn(...args);\r\n    cache.set(key, result);\r\n    return result;\r\n  };\r\n}\r\n```",
+    "number": 23
+  },
+  {
+    "id": "javascript-24",
+    "topic": "javascript",
+    "title": "What are Symbols and Their Use Cases?",
+    "answer": "Symbols are unique, immutable primitive values used as unique property keys.\r\n\r\n```javascript\r\n// Creating symbols\r\nconst sym1 = Symbol();\r\nconst sym2 = Symbol('description');\r\nconst sym3 = Symbol('description');\r\n\r\nconsole.log(sym2 === sym3); // false (always unique)\r\n\r\n// Using as object keys\r\nconst obj = {\r\n  [sym1]: 'value1',\r\n  [sym2]: 'value2',\r\n  regular: 'regular property'\r\n};\r\n\r\nconsole.log(obj[sym1]); // 'value1'\r\nconsole.log(Object.keys(obj)); // ['regular'] (symbols not enumerable)\r\n\r\n// Well-known symbols\r\nconst arr = [1, 2, 3];\r\narr[Symbol.iterator]; // Iterator symbol\r\n\r\n// Custom iterator\r\nconst collection = {\r\n  items: [1, 2, 3],\r\n  [Symbol.iterator]: function*() {\r\n    for (let item of this.items) {\r\n      yield item;\r\n    }\r\n  }\r\n};\r\n\r\nfor (let item of collection) {\r\n  console.log(item); // 1, 2, 3\r\n}\r\n\r\n// Symbol.for - global symbol registry\r\nconst globalSym = Symbol.for('key');\r\nconst sameGlobalSym = Symbol.for('key');\r\nconsole.log(globalSym === sameGlobalSym); // true\r\n\r\n// Use case: Private properties\r\nconst PRIVATE_KEY = Symbol('private');\r\nclass MyClass {\r\n  constructor() {\r\n    this[PRIVATE_KEY] = 'secret';\r\n  }\r\n  getSecret() {\r\n    return this[PRIVATE_KEY];\r\n  }\r\n}\r\n```",
+    "number": 24
+  },
+  {
+    "id": "javascript-25",
+    "topic": "javascript",
+    "title": "Explain the Difference Between Shallow and Deep Copy",
+    "answer": "Shallow copy copies references, deep copy creates new objects recursively.\r\n\r\n```javascript\r\n// Shallow copy\r\nconst original = {\r\n  name: 'John',\r\n  address: {\r\n    city: 'NYC',\r\n    zip: '10001'\r\n  }\r\n};\r\n\r\n// Shallow copy methods\r\nconst shallow1 = Object.assign({}, original);\r\nconst shallow2 = { ...original };\r\n\r\nshallow1.address.city = 'LA';\r\nconsole.log(original.address.city); // 'LA' (changed!)\r\n\r\n// Deep copy methods\r\n// 1. JSON (limitations: no functions, dates, undefined, etc.)\r\nconst deep1 = JSON.parse(JSON.stringify(original));\r\ndeep1.address.city = 'Chicago';\r\nconsole.log(original.address.city); // 'NYC' (unchanged)\r\n\r\n// 2. Recursive deep copy\r\nfunction deepCopy(obj) {\r\n  if (obj === null || typeof obj !== 'object') {\r\n    return obj;\r\n  }\r\n  if (obj instanceof Date) {\r\n    return new Date(obj);\r\n  }\r\n  if (obj instanceof Array) {\r\n    return obj.map(item => deepCopy(item));\r\n  }\r\n  const copy = {};\r\n  for (let key in obj) {\r\n    if (obj.hasOwnProperty(key)) {\r\n      copy[key] = deepCopy(obj[key]);\r\n    }\r\n  }\r\n  return copy;\r\n}\r\n\r\nconst deep2 = deepCopy(original);\r\ndeep2.address.city = 'Boston';\r\nconsole.log(original.address.city); // 'NYC' (unchanged)\r\n\r\n// 3. Structured cloning (modern browsers)\r\nconst deep3 = structuredClone(original);\r\n\r\n// Array shallow copy\r\nconst arr = [1, 2, [3, 4]];\r\nconst arrShallow = [...arr];\r\narrShallow[2][0] = 99;\r\nconsole.log(arr[2][0]); // 99 (changed!)\r\n\r\n// Array deep copy\r\nconst arrDeep = JSON.parse(JSON.stringify(arr));\r\narrDeep[2][0] = 88;\r\nconsole.log(arr[2][0]); // 99 (unchanged)\r\n```",
+    "number": 25
+  }
+]

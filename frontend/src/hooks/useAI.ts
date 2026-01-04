@@ -34,6 +34,8 @@ export interface GenerateCoverLetterRequest {
 
 export interface GenerateCoverLetterResponse {
   coverLetter: string;
+  matchPercentage: number;
+  matchSummary: string;
 }
 
 interface GenerateQuestionsError {

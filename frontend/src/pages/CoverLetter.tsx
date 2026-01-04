@@ -16,6 +16,8 @@ const CoverLetter = () => {
   );
   const [companyDescription, setCompanyDescription] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
+  const [matchPercentage, setMatchPercentage] = useState<number | null>(null);
+  const [matchSummary, setMatchSummary] = useState("");
   const [copied, setCopied] = useState(false);
 
   // Load saved profile description
@@ -63,6 +65,8 @@ const CoverLetter = () => {
         companyDescription,
       });
       setCoverLetter(result.coverLetter);
+      setMatchPercentage(result.matchPercentage);
+      setMatchSummary(result.matchSummary);
     } catch {
       // Error is handled by the hook
     }
@@ -165,6 +169,39 @@ const CoverLetter = () => {
             {/* Generated Cover Letter Section */}
             {coverLetter && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                {/* Match Analysis Section */}
+                {matchPercentage !== null && (
+                  <div className="mb-4 sm:mb-6 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg border border-orange-100">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-3">
+                      <h3 className="text-sm sm:text-base font-semibold text-black">
+                        Job Match Analysis
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <div className="text-2xl sm:text-3xl font-bold text-orange-600">
+                          {matchPercentage}%
+                        </div>
+                        <div className="w-24 sm:w-32 h-2 sm:h-3 bg-gray-200 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all ${
+                              matchPercentage >= 80
+                                ? "bg-green-500"
+                                : matchPercentage >= 60
+                                ? "bg-orange-500"
+                                : "bg-red-500"
+                            }`}
+                            style={{ width: `${matchPercentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {matchSummary && (
+                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                        {matchSummary}
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between mb-3 sm:mb-4 gap-2">
                   <h2 className="text-base sm:text-lg font-semibold text-black truncate">
                     Generated Cover Letter
