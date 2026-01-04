@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import { loadAllQuestions, type InterviewQuestion, type QuestionTopic } from '../utils/parseQuestions';
 import ReactMarkdown from 'react-markdown';
@@ -27,7 +27,7 @@ const InterviewQuestions = () => {
   // Load questions on mount
   useEffect(() => {
     let isMounted = true;
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
     
     const fetchQuestions = async () => {
       try {
